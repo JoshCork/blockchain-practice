@@ -1,5 +1,5 @@
 // Require file system access
-fs = require('./node_modules/fs');
+fs = require('fs');
 
 // Read file buffer 
 imgReadBuffer = fs.readFileSync('grumpy.jpg');
