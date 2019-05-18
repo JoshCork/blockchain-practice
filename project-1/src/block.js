@@ -38,14 +38,18 @@ class Block {
     validate() {
         let self = this;
         return new Promise((resolve, reject) => {
-            // Save in auxiliary variable the current block hash
+            // Save in auxiliary variable the current block hash                      
                                             
             // Recalculate the hash of the Block
+            let auxHash = SHA256(JSON.stringify(self));
+
             // Comparing if the hashes changed
             // Returning the Block is not valid
-            
-            // Returning the Block is valid
-
+            if (self.hash != auxHash) {
+                reject(Error("Block is not valid"))
+            } else {// Returning the Block is valid
+                resolve(self);
+            }            
         });
     }
 
@@ -59,12 +63,35 @@ class Block {
      *     or Reject with an error.
      */
     getBData() {
-        // Getting the encoded data saved in the Block
-        // Decoding the data to retrieve the JSON representation of the object
-        // Parse the data to an object to be retrieve.
-
+        let self = this;
+        
         // Resolve with the data if the object isn't the Genesis block
+        /* 
+        Josh's notes: Not sure if this needs to be a promise.  Seems silly as the purpose
+        of the promise is to make sure that the functionality contained within the promise worked.
+        I only used a pomise here because of the language that was used in the ruberick.  Also, I asssume
+        that calling getBData on the genisis block to get the data out of that block shouldn't be something that
+        should be disallowed? The wording in the 'step 2' project work discriptions reads:
 
+        "Resolve with the data and make sure that you don't need to return the data for the 'genesis block' or Reject with an error."
+
+        */
+       //TODO: Refactor once I understand this requirement better. 
+        return new Promise((resolve,reject) => {
+            // Getting the encoded data saved in the Block
+            let encodedBody = self.body;
+            // Decoding the data to retrieve the JSON representation of the object
+            let decodedBody = hex2ascii(encodedBody);
+            // Parse the data to an object to be retrieve.
+            let bodyObject = JSON.parse(decodedBody);
+
+            if (self.height = 0) {
+                reject(Error("this is the genisis block"))
+            } else {
+                resolve(bodyObject);
+            }
+
+        });
     }
 
 }
