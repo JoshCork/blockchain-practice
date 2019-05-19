@@ -11,6 +11,7 @@
 const SHA256 = require('crypto-js/sha256');
 const BlockClass = require('./block.js');
 const bitcoinMessage = require('bitcoinjs-message');
+const Moment = require('moment');
 
 class Blockchain {
 
@@ -121,8 +122,20 @@ class Blockchain {
      * @param {*} star 
      */
     submitStar(address, message, signature, star) {
+        console.log('i was called!');        
         let self = this;
+        let currentTime = Moment.unix(parseInt(new Date().getTime().toString().slice(0, -3)));        
+        let messageTime = Moment.unix(parseInt(message.split(':')[1]));                
+        let timeDelta = Math.abs(Moment.duration(messageTime.diff(currentTime)).as('minutes'));        
+
         return new Promise(async (resolve, reject) => {
+            let verified = bitcoinMessage.verify(message, address, signature)
+            if ( timeDelta <= 5 && verified){                
+                resolve(self._addBlock(star));
+            } else {
+                console.log(`block not valid: \ntimeDelta:${timeDelta} \nverification status: ${verified}`);
+                reject(Error(`block not valid: timeDelta:${timeDelta} | verification status: ${verified}`));
+            }
             
         });
     }
