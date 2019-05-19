@@ -149,7 +149,12 @@ class Blockchain {
     getBlockByHash(hash) {
         let self = this;
         return new Promise((resolve, reject) => {
-           
+           let foundBlock = self.chain.filter(block => block.hash === hash);
+           if (foundBlock){
+               resolve(foundBlock)
+           } else {
+               reject(Error("couldn't find that block."));
+           }
         });
     }
 
@@ -179,7 +184,27 @@ class Blockchain {
     getStarsByWalletAddress (address) {
         let self = this;
         let stars = [];
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {                        
+            
+            //loop through the blocks and for each block
+            // get decode the data
+            // compare data.address to address
+            // if address is a match push data.star into the array
+            self.chain.forEach(function(block){
+                let decodedData = block.getBData();
+                if (decodedData.address = address){
+                    stars.push(decodedData.star);
+                }
+            });
+            
+
+            // if any starts are in the array then return the array
+            if (stars.length > 0){
+                resolve(stars);
+            } else {
+                reject("no stars were found.");
+            }
+            
             
         });
     }
