@@ -63,7 +63,7 @@ class Block {
      *     or Reject with an error.
      */
     getBData() {
-        let self = this;
+        let self = this;       
         
         // Resolve with the data if the object isn't the Genesis block
         /* 
@@ -77,23 +77,25 @@ class Block {
 
         */
        //TODO: Refactor once I understand this requirement better. 
-        return new Promise((resolve,reject) => {
+        
             // Getting the encoded data saved in the Block
             let encodedBody = self.body;
+            console.log(`encoded body: ${encodedBody}`);
             // Decoding the data to retrieve the JSON representation of the object
             let decodedBody = hex2ascii(encodedBody);
+            console.log(`decoded body: ${decodedBody}`);
             // Parse the data to an object to be retrieve.
             let bodyObject = JSON.parse(decodedBody);
+            console.log(`decoded body (as object): ${bodyObject}`);
 
             if (self.height != 0) {
-                resolve(bodyObject);                
-            } else if (self.height === 0) {
-                resolve(self.body);
+                return bodyObject;                
+            } else if (self.height === 0) {                
+                return decodedBody;
             } else {
-                reject(Error("There was an error decoding body data."))
+                console.log("uh oh.")
+                return Error("There was an error decoding body data.")
             }
-
-        });
     }
 
 }
