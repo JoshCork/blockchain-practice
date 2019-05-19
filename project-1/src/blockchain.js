@@ -184,7 +184,12 @@ class Blockchain {
         let self = this;
         let stars = [];
         console.log(`address: ${address}`)
-        stars.push("testing a push to stars")        
+        stars.push("testing a push to stars")
+        
+        self.chain.forEach(function(block){
+            
+        });
+
         return new Promise((resolve, reject) => {                        
             console.log("in the promise.");
             //loop through the blocks and for each block
