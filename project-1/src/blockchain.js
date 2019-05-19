@@ -95,7 +95,11 @@ class Blockchain {
      */
     requestMessageOwnershipVerification(address) {
         return new Promise((resolve) => {
-            
+            // ugh, this was hard to figure out what they were trying to say.  In the course material
+            // they placed this in tick marks which cuased the markdown to turn this into code... when 
+            // they actually wanted the tick marks included. Ugh.
+            let message = `${address}:${new Date().getTime().toString().slice(0,-3)}:starRegistry`;
+            resolve(message);            
         });
     }
 
