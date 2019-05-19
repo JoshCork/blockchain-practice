@@ -85,10 +85,12 @@ class Block {
             // Parse the data to an object to be retrieve.
             let bodyObject = JSON.parse(decodedBody);
 
-            if (self.height = 0) {
-                reject(Error("this is the genisis block"))
+            if (self.height != 0) {
+                resolve(bodyObject);                
+            } else if (self.height === 0) {
+                resolve(self.body);
             } else {
-                resolve(bodyObject);
+                reject(Error("There was an error decoding body data."))
             }
 
         });
