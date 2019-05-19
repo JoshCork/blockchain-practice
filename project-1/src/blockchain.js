@@ -63,7 +63,24 @@ class Blockchain {
      */
     _addBlock(block) {
         let self = this;
+        let currentChainHeight = this.getChainHeight();
+        
         return new Promise(async (resolve, reject) => {
+            
+            if (self.chain.length > 0) {
+                block.previousBlockHash = this.chain[this.chain.length-1].hash;
+            }
+            block.time = new Date().getTime().toString().slice(0,-3);
+            block.height = this.chain.length;
+            block.hash = SHA256(JSON.stringify(block));
+
+            if (block.hash) {             
+                this.chain.hash = currentChainHeight + 1;   
+                resolve(this.chain.push(block)); 
+            } else {
+                reject(Error("hashing failed"));
+            }
+
            
         });
     }
