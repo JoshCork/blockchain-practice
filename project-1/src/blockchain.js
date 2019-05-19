@@ -121,8 +121,7 @@ class Blockchain {
      * @param {*} signature 
      * @param {*} star 
      */
-    submitStar(address, message, signature, star) {
-        console.log('i was called!');        
+    submitStar(address, message, signature, star) {     
         let self = this;
         let currentTime = Moment.unix(parseInt(new Date().getTime().toString().slice(0, -3)));        
         let messageTime = Moment.unix(parseInt(message.split(':')[1]));                
@@ -130,7 +129,7 @@ class Blockchain {
 
         return new Promise(async (resolve, reject) => {
             let verified = bitcoinMessage.verify(message, address, signature)
-            if ( timeDelta <= 5 && verified){                
+            if ( timeDelta <= 500 && verified){                
                 resolve(self._addBlock(star));
             } else {
                 console.log(`block not valid: \ntimeDelta:${timeDelta} \nverification status: ${verified}`);
@@ -184,24 +183,38 @@ class Blockchain {
     getStarsByWalletAddress (address) {
         let self = this;
         let stars = [];
+        console.log(`address: ${address}`)
+        stars.push("testing a push to stars")        
         return new Promise((resolve, reject) => {                        
-            
+            console.log("in the promise.");
             //loop through the blocks and for each block
             // get decode the data
             // compare data.address to address
             // if address is a match push data.star into the array
+            console.log(`chaain length: ${self.chain.length}`)
+            
             self.chain.forEach(function(block){
-                let decodedData = block.getBData();
-                if (decodedData.address = address){
-                    stars.push(decodedData.star);
+                console.log("i have looped.")                                
+                // let decodedData = block.getBData();
+                console.log(`decodedData: ${block.getBData()}`)
+                if (block.getBData().address && block.getBData().address === address){
+                    console.log("i've decided to push.");
+                    stars.push(block.getBData().star);
+                } else {
+                    console.log(`wrong-address or decodedData.address does not exist`);
+                    console.log(`decodedData.address: ${block.getBData().address}`);                    
                 }
             });
             
+            console.log("I've exited the loop.  Stars contains:");
+            console.log(stars);
 
             // if any starts are in the array then return the array
             if (stars.length > 0){
+                console.log("length is greater than zero");
                 resolve(stars);
             } else {
+                console.log("length is NOT greater than zero");
                 reject("no stars were found.");
             }
             
@@ -219,7 +232,19 @@ class Blockchain {
         let self = this;
         let errorLog = [];
         return new Promise(async (resolve, reject) => {
-            
+            self.chain.forEach(function(block){
+                let validBlock = block.validate();
+                let expectedHash = validBlock.previousBlockHash;
+                let actualHash = self.chain[validBlock.height-1].hash;
+                if (expectedHash != actualHash){
+                    errorLog.push(`Error with block with block of height: ${block.height}`)
+                }
+            });
+            if (errorLog){
+                resolve(errorLog);
+            } else {
+                reject(Error('there was an error generating the error log'));
+            }
         });
     }
 
