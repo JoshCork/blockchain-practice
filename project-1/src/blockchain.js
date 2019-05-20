@@ -66,8 +66,6 @@ class Blockchain {
         let self = this;
         let currentChainHeight = self.height;
 
-        console.log(`currentChainHeight (pre add): ${currentChainHeight}`);
-        
         return new Promise(async (resolve, reject) => {
             
             if (self.chain.length > 0) {
@@ -76,11 +74,11 @@ class Blockchain {
             block.time = new Date().getTime().toString().slice(0,-3);
             block.height = self.chain.length;
             block.hash = SHA256(JSON.stringify(block));
+            console.log(`current hash: ${block.hash}`);
 
             if (block.hash) {             
                 self.height = currentChainHeight + 1;   
                 resolve(self.chain.push(block)); 
-                console.log(`currentChainHeight (post add): ${currentChainHeight}`);
             } else {
                 reject(Error("hashing failed"));
             }
@@ -139,7 +137,7 @@ class Blockchain {
 
         return new Promise(async (resolve, reject) => {
             let verified = bitcoinMessage.verify(message, address, signature)
-            if ( timeDelta <= 500 && verified){
+            if ( timeDelta <= 5 && verified){
                 let block = new BlockClass.Block(dataObj);                
                 resolve(self._addBlock(block));
             } else {
@@ -237,13 +235,20 @@ class Blockchain {
         return new Promise(async (resolve, reject) => {
             self.chain.forEach(function(block){
                 let validBlock = block.validate();
-                let expectedHash = validBlock.previousBlockHash;
-                let actualHash = self.chain[validBlock.height-1].hash;
-                if (expectedHash != actualHash){
-                    errorLog.push(`Error with block with block of height: ${block.height}`)
-                }
+                // Genisis Block does not have a value for previous block hash.  Only validate that the 
+                // hash of the block itself is still valid. 
+                if (validBlock.height === 0){
+                    console.log(`self.height (from validateChain): ${self.height}`);
+                    console.log(`self.chain.length (from validateChain): ${self.chain.length}`);
+                    let expectedHash = validBlock.previousBlockHash;
+                    let actualHash = self.chain[validBlock.height-1].hash;
+                    if (expectedHash != actualHash){
+                        errorLog.push(`Error with block with block of height: ${block.height}`)
+                    }
+                }                
             });
             if (errorLog){
+                console.log(errorLog);
                 resolve(errorLog);
             } else {
                 reject(Error('there was an error generating the error log'));
