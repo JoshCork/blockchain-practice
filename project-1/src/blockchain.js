@@ -64,26 +64,30 @@ class Blockchain {
      */
     _addBlock(block) {
         let self = this;
-        let currentChainHeight = this.getChainHeight();
+        let currentChainHeight = self.height;
+
+        console.log(`currentChainHeight (pre add): ${currentChainHeight}`);
         
         return new Promise(async (resolve, reject) => {
             
             if (self.chain.length > 0) {
-                block.previousBlockHash = this.chain[this.chain.length-1].hash;
+                block.previousBlockHash = self.chain[self.chain.length-1].hash;
             }
             block.time = new Date().getTime().toString().slice(0,-3);
-            block.height = this.chain.length;
+            block.height = self.chain.length;
             block.hash = SHA256(JSON.stringify(block));
 
             if (block.hash) {             
-                this.chain.hash = currentChainHeight + 1;   
-                resolve(this.chain.push(block)); 
+                self.height = currentChainHeight + 1;   
+                resolve(self.chain.push(block)); 
+                console.log(`currentChainHeight (post add): ${currentChainHeight}`);
             } else {
                 reject(Error("hashing failed"));
             }
-
+        
            
         });
+       
     }
 
     /**
@@ -122,15 +126,22 @@ class Blockchain {
      * @param {*} star 
      */
     submitStar(address, message, signature, star) {     
-        let self = this;
+        let self = this;        
         let currentTime = Moment.unix(parseInt(new Date().getTime().toString().slice(0, -3)));        
         let messageTime = Moment.unix(parseInt(message.split(':')[1]));                
         let timeDelta = Math.abs(Moment.duration(messageTime.diff(currentTime)).as('minutes'));        
+        let dataObj = {
+            "address" : address,
+            "message" : message,
+            "signature" : signature,
+            "star" : star
+        };
 
         return new Promise(async (resolve, reject) => {
             let verified = bitcoinMessage.verify(message, address, signature)
-            if ( timeDelta <= 500 && verified){                
-                resolve(self._addBlock(star));
+            if ( timeDelta <= 500 && verified){
+                let block = new BlockClass.Block(dataObj);                
+                resolve(self._addBlock(block));
             } else {
                 console.log(`block not valid: \ntimeDelta:${timeDelta} \nverification status: ${verified}`);
                 reject(Error(`block not valid: timeDelta:${timeDelta} | verification status: ${verified}`));
@@ -183,36 +194,23 @@ class Blockchain {
     getStarsByWalletAddress (address) {
         let self = this;
         let stars = [];
-        console.log(`address: ${address}`)
-        stars.push("testing a push to stars")
-        
-        self.chain.forEach(function(block){
-            
-        });
+        let decodedData = {}
 
-        return new Promise((resolve, reject) => {                        
-            console.log("in the promise.");
-            //loop through the blocks and for each block
-            // get decode the data
-            // compare data.address to address
-            // if address is a match push data.star into the array
-            console.log(`chaain length: ${self.chain.length}`)
-            
-            self.chain.forEach(function(block){
-                console.log("i have looped.")                                
-                // let decodedData = block.getBData();
-                console.log(`decodedData: ${block.getBData()}`)
-                if (block.getBData().address && block.getBData().address === address){
-                    console.log("i've decided to push.");
-                    stars.push(block.getBData().star);
-                } else {
-                    console.log(`wrong-address or decodedData.address does not exist`);
-                    console.log(`decodedData.address: ${block.getBData().address}`);                    
-                }
-            });
-            
-            console.log("I've exited the loop.  Stars contains:");
-            console.log(stars);
+        for (let i=0; i < self.chain.length; ++i) {                            
+            decodedData = self.chain[i].getBData();            
+            if (decodedData.address && decodedData.address === address){
+                stars.push({
+                        "owner" : decodedData.address,
+                        "star" : decodedData.star
+                    });
+            } else {
+                console.log(`wrong-address or decodedData.address does not exist`);
+                console.log(`decodedData.address: ${decodedData.address}`);                    
+            }
+        }
+       
+
+        return new Promise((resolve, reject) => {        
 
             // if any starts are in the array then return the array
             if (stars.length > 0){
