@@ -23,7 +23,6 @@ class BlockchainController {
     // Enpoint to validate the chain (GET Endpoint)
     validateChain() {
         this.app.get("/validateChain", async (req, res) => {
-            console.log("made it into validateChain()")
             let validation = await this.blockchain.validateChain();
             if(validation){
                 return res.status(200).json(validation);
