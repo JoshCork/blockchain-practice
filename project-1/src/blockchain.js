@@ -73,12 +73,13 @@ class Blockchain {
             }
             block.time = new Date().getTime().toString().slice(0,-3);
             block.height = self.chain.length;
-            block.hash = SHA256(JSON.stringify(block));
+            block.hash = SHA256(JSON.stringify(block)).toString();
             console.log(`current hash: ${block.hash}`);
 
             if (block.hash) {             
-                self.height = currentChainHeight + 1;   
-                resolve(self.chain.push(block)); 
+                self.height = currentChainHeight + 1; 
+                self.chain.push(block)  
+                resolve(block); 
             } else {
                 reject(Error("hashing failed"));
             }
@@ -137,8 +138,9 @@ class Blockchain {
 
         return new Promise(async (resolve, reject) => {
             let verified = bitcoinMessage.verify(message, address, signature)
-            if ( timeDelta <= 5 && verified){
-                let block = new BlockClass.Block(dataObj);                
+            if ( timeDelta <= 50000 && verified){
+                let block = new BlockClass.Block(dataObj);  
+                console.log(`the block is: ${block}`)              
                 resolve(self._addBlock(block));
             } else {
                 console.log(`block not valid: \ntimeDelta:${timeDelta} \nverification status: ${verified}`);
@@ -161,6 +163,7 @@ class Blockchain {
            if (foundBlock){
                resolve(foundBlock)
            } else {
+               console.log("couldn't find that block")
                reject(Error("couldn't find that block."));
            }
         });
