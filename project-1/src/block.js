@@ -37,7 +37,7 @@ class Block {
      */
     validate() {
         let self = this;
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             // Save in auxiliary variable the current block hash                      
                                             
             // Recalculate the hash of the Block
@@ -69,17 +69,6 @@ class Block {
         let self = this;        
         
         // Resolve with the data if the object isn't the Genesis block
-        /* 
-        Josh's notes: Not sure if this needs to be a promise.  Seems silly as the purpose
-        of the promise is to make sure that the functionality contained within the promise worked.
-        I only used a pomise here because of the language that was used in the ruberick.  Also, I asssume
-        that calling getBData on the genisis block to get the data out of that block shouldn't be something that
-        should be disallowed? The wording in the 'step 2' project work discriptions reads:
-
-        "Resolve with the data and make sure that you don't need to return the data for the 'genesis block' or Reject with an error."
-
-        */
-       //TODO: Refactor once I understand this requirement better. 
         
             // Getting the encoded data saved in the Block
             let encodedBody = self.body;
