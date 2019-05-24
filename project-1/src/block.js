@@ -48,8 +48,8 @@ class Block {
 
             // Comparing if the hashes changed
             // Returning the Block is not valid
-            if (expectedHash.toString() === actualHash.toString()) {                
-                resolve(self);
+            if (expectedHash && actualHash) {                
+                resolve(expectedHash.toString() === actualHash.toString());
             } else {// Returning the Block is NOT valid
                 reject(Error("Block is NOT valid"))
             }            
@@ -72,13 +72,10 @@ class Block {
         
             // Getting the encoded data saved in the Block
             let encodedBody = self.body;
-            // console.log(`encoded body: ${encodedBody}`);
             // Decoding the data to retrieve the JSON representation of the object
             let decodedBody = hex2ascii(encodedBody);
-            // console.log(`decoded body: ${decodedBody}`);
             // Parse the data to an object to be retrieve.
             let bodyObject = JSON.parse(decodedBody);
-            //console.log(`decoded body (as object): ${bodyObject}`);
 
             if (self.height != 0) {
                return bodyObject;                
@@ -88,7 +85,7 @@ class Block {
                     "star"      : {} 
                 };
             } else {
-                console.log("uh oh.")
+                console.log("uh oh. There was an error decoding body data.")
                 return Error("There was an error decoding body data.")
             }
     }
