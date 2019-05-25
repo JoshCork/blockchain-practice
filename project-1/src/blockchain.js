@@ -74,7 +74,6 @@ class Blockchain {
             block.time = new Date().getTime().toString().slice(0,-3);
             block.height = self.chain.length;
             block.hash = SHA256(JSON.stringify(block)).toString();
-            console.log(`current hash: ${block.hash}`);
 
             if (block.hash) {             
                 self.height = currentChainHeight + 1; 
@@ -156,14 +155,14 @@ class Blockchain {
      * @param {*} hash 
      */
     getBlockByHash(hash) {
+        console.log('sooooo poopy!')
         let self = this;
         return new Promise((resolve, reject) => {
            let foundBlock = self.chain.filter(block => block.hash === hash);
-           if (foundBlock){
-               resolve(foundBlock)
+           if (foundBlock.length > 0){               
+               resolve(foundBlock);
            } else {
-               console.log("couldn't find that block")
-               reject(Error("couldn't find that block."));
+               resolve(null);
            }
         });
     }
@@ -203,22 +202,16 @@ class Blockchain {
                         "owner" : decodedData.address,
                         "star" : decodedData.star
                     });
-            } else {
-                console.log(`wrong-address or decodedData.address does not exist`);
-                console.log(`decodedData.address: ${decodedData.address}`);                    
-            }
-        }
-       
+            } 
+        }       
 
         return new Promise((resolve, reject) => {        
 
             // if any starts are in the array then return the array
-            if (stars.length > 0){
-                console.log("length is greater than zero");
+            if (stars){                
                 resolve(stars);
             } else {
-                console.log("length is NOT greater than zero");
-                reject("no stars were found.");
+                reject("There was an error.");
             }
             
             
