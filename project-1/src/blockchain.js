@@ -224,15 +224,16 @@ class Blockchain {
      * 1. You should validate each block using `validateBlock`
      * 2. Each Block should check the with the previousBlockHash
      */
-    validateChain() {
+    async validateChain() {
         let self = this;
         let errorLog = [];
+        
         return new Promise(async (resolve, reject) => {
-            self.chain.forEach(async function(block){                   
-                let isBlockValid = await block.validate();               
+            self.chain.forEach(async (block)=>{                   
+                let isBlockValid = await block.validate();             
                 if (!isBlockValid){
                     errorLog.push({"blockHeight":block.height, "errorType": "Tampering"});
-                }
+                } else if (isBlockValid){
                 /* 
                  * Genisis Block does not have a value for previous block hash.  Only validate do this 
                  * step of validating that the hash of the previous block === to the .previousBlockHash
@@ -241,15 +242,16 @@ class Blockchain {
                 if (block.height != 0){
                     let expectedHash = block.previousBlockHash;
                     let actualHash = self.chain[block.height-1].hash;
-                    if (expectedHash != actualHash){
-                        
+                    if (expectedHash != actualHash){                        
                         errorLog.push({"blockHeight":block.height, "errorType": "Broken Chain"})
                     }
+                }
                 }                
             });
-            if (errorLog){
+            if (errorLog){                
                 resolve(errorLog);
             } else {
+                console.log(`Uh oh... there was some issue. `)
                 reject(Error('there was an error generating the error log'));
             }
         });
