@@ -1,14 +1,14 @@
 {
-  "name": "project",
+  "name": "block_expl",
   "version": "1.0.0",
   "description": "",
-  "main": "hashing.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "crypto-js": "^3.1.9-1"
+    "blockexplorer": "^1.0.1"
   }
 }
