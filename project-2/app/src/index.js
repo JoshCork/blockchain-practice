@@ -50,7 +50,7 @@ const App = {
     const id = document.getElementById("lookid").value;
     const deets = await lookUptokenIdToStarInfo(id).send({from: this.account});
     
-    App.setStatus("Star Details: " + JSON.stringify(deets) + ".");
+    App.displayLookup("Star Details: " + JSON.stringify(deets) + ".");
     
   }
 
