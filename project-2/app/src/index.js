@@ -33,7 +33,7 @@ const App = {
 
   displayLookup: function(message) {
     const lookupResults = document.getElementById("lookupResults");
-    status.innerHTML = message;
+    lookupResults.innerHTML = message;
   },
 
   createStar: async function() {
@@ -48,7 +48,7 @@ const App = {
   lookUp: async function (){
     const { lookUptokenIdToStarInfo } = this.meta.methods;
     const id = document.getElementById("lookid").value;
-    const deets = await lookUptokenIdToStarInfo(id).send({from: this.account});
+    const deets = await lookUptokenIdToStarInfo(id).call();
     
     App.displayLookup("Star Details: " + JSON.stringify(deets) + ".");
     
