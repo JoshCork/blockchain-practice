@@ -64,6 +64,7 @@ typings/
 .DS_Store
 .AppleDouble
 .LSOverride
+.secret
 
 # Icon must end with two \r
 Icon
