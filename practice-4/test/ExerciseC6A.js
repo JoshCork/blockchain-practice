@@ -23,19 +23,44 @@ contract('ExerciseC6A', async (accounts) => {
 
   });
 
-  it('contract owner can toggle set contract operational state to false', async () => {
+  // it('contract owner can toggle set contract operational state to false', async () => {
 
+  //   // ARRANGE
+  //   let caller = accounts[0]; // This should be config.owner or accounts[0] for registering a new user
+
+
+  //   // ACT
+  //   await config.exerciseC6A.setOperationalState(false, {from: caller});
+  //   let result = await config.exerciseC6A.getOperationalState({from:caller});
+
+  //   // ASSERT
+  //   assert.equal(result, false, "Contract should not be active... but alas it is.");
+
+  // });
+
+  it('function call is made when multi-party threshold is reached', async() => {
     // ARRANGE
-    let caller = accounts[0]; // This should be config.owner or accounts[0] for registering a new user
+    let admin1 = accounts[1];
+    let admin2 = accounts[2];
+    let admin3 = accounts[3];
+    let admin4 = accounts[4];
 
+    await config.exerciseC6A.registerUser(admin1, true, {from: config.owner});
+    await config.exerciseC6A.registerUser(admin2, true, {from: config.owner});
+    await config.exerciseC6A.registerUser(admin3, true, {from: config.owner});
+    await config.exerciseC6A.registerUser(admin4, true, {from: config.owner});
+
+    let startStatus = await config.exerciseC6A.getOperationalState.call();
+    let changeStatus = !startStatus;
 
     // ACT
-    await config.exerciseC6A.setOperationalState(false, {from: caller});
-    let result = await config.exerciseC6A.getOperationalState({from:caller});
+    await config.exerciseC6A.setOperationalState(changeStatus, {from: admin1});
+    await config.exerciseC6A.setOperationalState(changeStatus, {from: admin2});
 
-    // ASSERT
-    assert.equal(result, false, "Contract should not be active... but alas it is.");
+    let newStatus = await config.exerciseC6A.getOperationalState.call();
 
+    //ASSERT
+    assert.equal(changeStatus, newStatus, "Multi-party call failed");
   });
 
 
