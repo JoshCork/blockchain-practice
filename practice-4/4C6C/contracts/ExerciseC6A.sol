@@ -1,4 +1,4 @@
-pragma solidity ^0.4.25;
+pragma solidity ^0.5.8;
 
 contract ExerciseC6A {
 
@@ -29,8 +29,8 @@ contract ExerciseC6A {
     */
     constructor
                                 (
-                                ) 
-                                public 
+                                )
+                                public
     {
         contractOwner = msg.sender;
     }
@@ -53,10 +53,10 @@ contract ExerciseC6A {
 
     /**
     * @dev Modifier that requires the "operational" boolean variable to be "true"
-    *      This is used on all state changing functions to pause the contract in 
+    *      This is used on all state changing functions to pause the contract in
     *      the event there is an issue that needs to be fixed
     */
-    modifier requireIsOperational() 
+    modifier requireIsOperational()
     {
         require(operational, "Contract is currently not operational");
         _;  // All modifiers require an "_" which indicates where the function body will be added
@@ -71,7 +71,7 @@ contract ExerciseC6A {
     * @dev Check if a user is registered
     *
     * @return A bool that indicates if the user is registered
-    */   
+    */
     function isUserRegistered
                             (
                                 address account
@@ -88,11 +88,11 @@ contract ExerciseC6A {
     * @dev Get operating status of contract
     *
     * @return A bool that is the current operating status
-    */      
-    function isOperational() 
-                            public 
-                            view 
-                            returns(bool) 
+    */
+    function isOperational()
+                            public
+                            view
+                            returns(bool)
     {
         return operational;
     }
@@ -121,15 +121,15 @@ contract ExerciseC6A {
     * @dev Sets contract operations on/off
     *
     * When operational mode is disabled, all write transactions except for this one will fail
-    */    
+    */
     function setOperatingStatus
                             (
                                 bool mode
-                            ) 
+                            )
                             external
                             requireContractOwner
     {
-            operational = mode;      
+            operational = mode;
     }
 
 }

@@ -1,4 +1,4 @@
-pragma solidity ^0.4.25;
+pragma solidity ^0.5.8;
 
 // It's important to avoid vulnerabilities due to numeric overflow bugs
 // OpenZeppelin's SafeMath library, when used correctly, protects agains such bugs
@@ -38,8 +38,8 @@ contract ExerciseC6C {
     */
     constructor
                                 (
-                                ) 
-                                public 
+                                )
+                                public
     {
         contractOwner = msg.sender;
     }
@@ -68,7 +68,7 @@ contract ExerciseC6C {
     * @dev Check if an employee is registered
     *
     * @return A bool that indicates if the employee is registered
-    */   
+    */
     function isEmployeeRegistered
                             (
                                 string id

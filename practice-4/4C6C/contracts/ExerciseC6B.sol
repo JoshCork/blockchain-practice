@@ -1,4 +1,4 @@
-pragma solidity ^0.4.25;
+pragma solidity ^0.5.8;
 
 // It's important to avoid vulnerabilities due to numeric overflow bugs
 // OpenZeppelin's SafeMath library, when used correctly, protects agains such bugs
@@ -21,11 +21,11 @@ contract ExerciseC6B {
     constructor
                 (
                 )
-                public 
+                public
     {
         contractOwner = msg.sender;
     }
-   
+
     /********************************************************************************************/
     /*                                       FUNCTION MODIFIERS                                 */
     /********************************************************************************************/
@@ -47,6 +47,6 @@ contract ExerciseC6B {
     /********************************************************************************************/
 
 
-    
+
 }
 
